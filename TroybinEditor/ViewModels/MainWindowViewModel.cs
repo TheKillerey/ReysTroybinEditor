@@ -262,7 +262,14 @@ public partial class MainWindowViewModel : ObservableObject
         Particles.Clear();
         if (CurrentDocument == null) return;
         foreach (var p in CurrentDocument.Particles)
-            Particles.Add(new ParticleViewModel(p));
+        {
+            var vm = new ParticleViewModel(p);
+            vm.OnModified = () =>
+            {
+                if (CurrentDocument != null) CurrentDocument.IsModified = true;
+            };
+            Particles.Add(vm);
+        }
         if (Particles.Count > 0) SelectedParticle = Particles[0];
     }
 

@@ -1,42 +1,69 @@
 <Window x:Class="TroybinEditor.Views.AddEmitterDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Add Emitter" Height="170" Width="440"
+        Title="Add Emitter" Height="260" Width="520"
+        MinHeight="220" MinWidth="400"
         WindowStartupLocation="CenterOwner"
-        ResizeMode="NoResize"
+        ResizeMode="CanResize"
         Background="{StaticResource SurfaceBrush}"
         Foreground="{StaticResource TextBrush}"
         ShowInTaskbar="False">
-    <Grid Margin="20">
+    <Grid Margin="24">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="16"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="16"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="12"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="0" Text="Add New Emitter" FontSize="15" FontWeight="Bold"
-                   Foreground="{StaticResource TextBrush}"/>
-
-        <StackPanel Grid.Row="2">
-            <TextBlock Text="Emitter Name" FontSize="11"
-                       Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,4"/>
-            <TextBox x:Name="NameBox"
-                     Style="{StaticResource ModernTextBoxStyle}"
-                     FontFamily="Consolas" FontSize="12"
-                     Text="NewEmitter"/>
+        <!-- Title -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal">
+            <Border Width="26" Height="26" Background="{StaticResource AccentBrush}"
+                    CornerRadius="6" Margin="0,0,10,0">
+                <TextBlock Text="⚡" FontSize="13"
+                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Border>
+            <TextBlock Text="Add New Emitter" FontSize="15" FontWeight="Bold"
+                       Foreground="{StaticResource TextBrush}" VerticalAlignment="Center"/>
         </StackPanel>
 
-        <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right">
+        <!-- Name label -->
+        <TextBlock Grid.Row="2" Text="Emitter Name" FontSize="11"
+                   Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,5"/>
+
+        <!-- Name input -->
+        <TextBox x:Name="NameBox" Grid.Row="3"
+                 Style="{StaticResource ModernTextBoxStyle}"
+                 FontFamily="Consolas" FontSize="13"
+                 Text="NewEmitter"/>
+
+        <!-- Hint -->
+        <Border Grid.Row="5" Background="{StaticResource BackgroundBrush}"
+                CornerRadius="6" Padding="12,8">
+            <TextBlock TextWrapping="Wrap" FontSize="11" LineHeight="18"
+                       Foreground="{StaticResource TextSecondaryBrush}">
+                <Run FontWeight="Bold" Foreground="{StaticResource AccentBrush}">Tip:</Run>
+                <Run> The emitter name must match the </Run>
+                <Run FontFamily="Consolas" Foreground="{StaticResource TextBrush}">GroupPartN</Run>
+                <Run> value in the System section. After adding, use </Run>
+                <Run FontWeight="Bold">➕ Entry</Run>
+                <Run> to fill in its properties.</Run>
+            </TextBlock>
+        </Border>
+
+        <!-- Buttons -->
+        <StackPanel Grid.Row="7" Orientation="Horizontal" HorizontalAlignment="Right">
             <Button Content="Cancel" Click="Cancel_Click"
                     Style="{StaticResource ModernButtonStyle}"
                     Background="{StaticResource SurfaceLightBrush}"
-                    Padding="16,7" Margin="0,0,8,0"/>
-            <Button Content="Add Emitter" Click="Ok_Click"
+                    Padding="16,8" Margin="0,0,8,0"/>
+            <Button Content="⚡  Add Emitter" Click="Ok_Click"
                     Style="{StaticResource ModernButtonStyle}"
-                    Padding="16,7" IsDefault="True"/>
+                    Padding="20,8" FontWeight="SemiBold" IsDefault="True"/>
         </StackPanel>
     </Grid>
 </Window>
-

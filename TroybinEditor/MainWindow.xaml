@@ -10,7 +10,8 @@
         MinHeight="600" MinWidth="900"
         Background="{StaticResource BackgroundBrush}"
         Foreground="{StaticResource TextBrush}"
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen"
+        Closing="Window_Closing">
 
     <Window.Resources>
         <!-- Accent button (delete / danger) -->
@@ -146,14 +147,10 @@
 
                     <!-- Convert -->
                     <Rectangle Width="1" Fill="{StaticResource SurfaceLightBrush}" Margin="0,4,12,4"/>
-                    <Button Content="📤 Export Text" Command="{Binding ExportToTextCommand}"
-                            Style="{StaticResource ModernButtonStyle}"
-                            Background="{StaticResource SurfaceLightBrush}" Padding="12,6" Margin="0,0,4,0"
-                            ToolTip="Export all emitters to a readable .txt file"/>
-                    <Button Content="📥 Import Text" Command="{Binding ImportFromTextCommand}"
+                    <Button Content="🔄 Convert Tool" Click="OpenConverter_Click"
                             Style="{StaticResource ModernButtonStyle}"
                             Background="{StaticResource SurfaceLightBrush}" Padding="12,6"
-                            ToolTip="Import emitters back from a .txt file"/>
+                            ToolTip="Open standalone Troybin ↔ Text batch converter"/>
                 </StackPanel>
 
                 <!-- Loading indicator -->

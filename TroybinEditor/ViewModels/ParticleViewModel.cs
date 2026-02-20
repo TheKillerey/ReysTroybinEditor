@@ -17,6 +17,9 @@ public partial class ParticleViewModel : ObservableObject
     private readonly List<string> _originalStrings;
     private readonly string _originalName;
 
+    /// <summary>Called whenever any entry value is changed inline (for IsModified tracking).</summary>
+    public Action? OnModified { get; set; }
+
     [ObservableProperty] private string name = string.Empty;
 
     public ObservableCollection<StringEntry> Entries { get; } = new();
@@ -55,6 +58,7 @@ public partial class ParticleViewModel : ObservableObject
     {
         if (entry.Index >= 0 && entry.Index < _model.Strings.Count)
             _model.Strings[entry.Index] = $"{entry.Key}={entry.Value}";
+        OnModified?.Invoke();
     }
 
     /// <summary>Reset all entries to the values they had when the file was loaded.</summary>

@@ -1,56 +1,95 @@
 <Window x:Class="TroybinEditor.Views.AddEntryDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Add Entry" Height="220" Width="440"
+        Title="Add Entry" Height="480" Width="600"
+        MinHeight="420" MinWidth="500"
         WindowStartupLocation="CenterOwner"
-        ResizeMode="NoResize"
+        ResizeMode="CanResize"
         Background="{StaticResource SurfaceBrush}"
         Foreground="{StaticResource TextBrush}"
         ShowInTaskbar="False">
     <Grid Margin="20">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="16"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="16"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="16"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>   <!-- title -->
+            <RowDefinition Height="14"/>
+            <RowDefinition Height="Auto"/>   <!-- template label -->
+            <RowDefinition Height="Auto"/>   <!-- template combo -->
+            <RowDefinition Height="14"/>
+            <RowDefinition Height="Auto"/>   <!-- description box -->
+            <RowDefinition Height="14"/>
+            <RowDefinition Height="Auto"/>   <!-- key/value labels -->
+            <RowDefinition Height="Auto"/>   <!-- key/value inputs -->
+            <RowDefinition Height="*"/>      <!-- spacer -->
+            <RowDefinition Height="Auto"/>   <!-- buttons -->
         </Grid.RowDefinitions>
 
         <!-- Title -->
-        <TextBlock Grid.Row="0" Text="Add New Entry" FontSize="15" FontWeight="Bold"
-                   Foreground="{StaticResource TextBrush}"/>
-
-        <!-- Key -->
-        <StackPanel Grid.Row="2">
-            <TextBlock Text="Field Name (key)" FontSize="11"
-                       Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,4"/>
-            <TextBox x:Name="KeyBox"
-                     Style="{StaticResource ModernTextBoxStyle}"
-                     FontFamily="Consolas" FontSize="12"
-                     Text="p-texture"/>
+        <StackPanel Grid.Row="0" Orientation="Horizontal">
+            <Border Width="26" Height="26" Background="{StaticResource AccentBrush}"
+                    CornerRadius="6" Margin="0,0,10,0">
+                <TextBlock Text="＋" FontSize="14" FontWeight="Bold"
+                           HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White"/>
+            </Border>
+            <TextBlock Text="Add New Entry" FontSize="15" FontWeight="Bold"
+                       Foreground="{StaticResource TextBrush}" VerticalAlignment="Center"/>
         </StackPanel>
 
-        <!-- Value -->
-        <StackPanel Grid.Row="4">
-            <TextBlock Text="Value" FontSize="11"
-                       Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,4"/>
-            <TextBox x:Name="ValueBox"
+        <!-- Template label -->
+        <TextBlock Grid.Row="2" Text="Template  (choose a known field or enter custom)"
+                   FontSize="11" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,5"/>
+
+        <!-- Template ComboBox -->
+        <ComboBox x:Name="TemplateCombo" Grid.Row="3"
+                  Background="{StaticResource SurfaceLightBrush}"
+                  Foreground="{StaticResource TextBrush}"
+                  BorderBrush="{StaticResource SurfaceLightBrush}"
+                  FontFamily="Consolas" FontSize="12" Padding="8,6"
+                  SelectionChanged="Template_SelectionChanged"/>
+
+        <!-- Description -->
+        <Border Grid.Row="5" Background="{StaticResource BackgroundBrush}" CornerRadius="6" Padding="10,8">
+            <TextBlock x:Name="DescLabel" FontSize="11" TextWrapping="Wrap" LineHeight="18"
+                       Foreground="{StaticResource TextSecondaryBrush}"
+                       Text="Select a template above, or type a custom key and value below."/>
+        </Border>
+
+        <!-- Key / Value labels -->
+        <Grid Grid.Row="7" Margin="0,0,0,4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="12"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="Field Name (key)" FontSize="11"
+                       Foreground="{StaticResource TextSecondaryBrush}"/>
+            <TextBlock Grid.Column="2" Text="Value" FontSize="11"
+                       Foreground="{StaticResource TextSecondaryBrush}"/>
+        </Grid>
+
+        <!-- Key / Value inputs -->
+        <Grid Grid.Row="8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="12"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBox x:Name="KeyBox" Grid.Column="0"
                      Style="{StaticResource ModernTextBoxStyle}"
                      FontFamily="Consolas" FontSize="12"/>
-        </StackPanel>
+            <TextBox x:Name="ValueBox" Grid.Column="2"
+                     Style="{StaticResource ModernTextBoxStyle}"
+                     FontFamily="Consolas" FontSize="12"/>
+        </Grid>
 
         <!-- Buttons -->
-        <StackPanel Grid.Row="6" Orientation="Horizontal" HorizontalAlignment="Right">
+        <StackPanel Grid.Row="10" Orientation="Horizontal" HorizontalAlignment="Right">
             <Button Content="Cancel" Click="Cancel_Click"
                     Style="{StaticResource ModernButtonStyle}"
                     Background="{StaticResource SurfaceLightBrush}"
-                    Padding="16,7" Margin="0,0,8,0"/>
-            <Button Content="Add Entry" Click="Ok_Click"
+                    Padding="16,8" Margin="0,0,8,0"/>
+            <Button Content="➕  Add Entry" Click="Ok_Click"
                     Style="{StaticResource ModernButtonStyle}"
-                    Padding="16,7" IsDefault="True"/>
+                    Padding="20,8" FontWeight="SemiBold" IsDefault="True"/>
         </StackPanel>
     </Grid>
 </Window>
-
