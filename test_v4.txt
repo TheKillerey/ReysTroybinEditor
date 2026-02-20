@@ -1,0 +1,91 @@
+﻿=== Hash verification ===
+  SFHash(GroupPart0, p-texture)    = 0xF5A0A332
+  SFHash(GroupPart0, rendermode)   = 0x5A9E7B05
+  SFHash(GroupPart0, p-mesh)       = 0x616B8136
+  SFHash(GroupPart0, e-life)       = 0x40E7BD90
+  SFHash(System, GroupPart0)       = 0x06169339
+  SFHash(System, GroupPart1)       = 0x0616933A
+
+=== sru_order_mm_ba_tar.troybin (261 bytes) ===
+  Version=0x02  Entries=25  Particles=2
+  All entry hashes + resolved names:
+    0x63103A53  [?] ? = 0.3
+    0x6F280C9E  [?] ? = 1
+    0x794982D9  [?] ? = 1
+    0x7954AEF1  [System] SimulateEveryFrame = 1
+    0x826E7882  [?] ? = 1
+    0xDDBF0991  [?] ? = 1
+    0x117C39EA  [?] ? = 0 40 0
+    0x216331E9  [?] ? = 1 0
+    0x6CEE595E  [?] ? = 1 1
+    0x7A898701  [?] ? = 1 1
+    0x88FA0246  [?] ? = 1 0
+    0xA4EB20DF  [?] ? = 1 1
+    0xD3F3C21B  [?] ? = 1 360
+    0x0616933A  [System] GroupPart1 = Cardbits
+    0x0616933B  [System] GroupPart2 = flash
+    0x07475BE5  [?] ? = 0
+    0x216331E8  [?] ? = 0.0 1
+    0x5D2FC393  [?] ? = 150
+    0x7938FECB  [?] ? = color-hit-physical.dds
+    0x9D2AFEA4  [?] ? = hiteffect.dds
+    0x9F4D1FB4  [System] GroupPart1Type = Simple
+    0xD3F3C21A  [?] ? = 0.0 0
+    0xDF31BAD1  [?] ? = 0
+    0xE3397EB5  [System] GroupPart2Type = Simple
+    0xF11CFC13  [?] ? = 0
+
+  Particles:
+  -> [System]  Tex=ÔÇö  Mesh=ÔÇö  Blend=ÔÇö  (5 fields)
+       SimulateEveryFrame=1
+       GroupPart1=Cardbits
+       GroupPart2=flash
+       GroupPart1Type=Simple
+       GroupPart2Type=Simple
+  -> [Unknown]  Tex=ÔÇö  Mesh=ÔÇö  Blend=ÔÇö  (20 fields)
+       hash:63103A53=0.3
+       hash:6F280C9E=1
+       hash:794982D9=1
+       hash:826E7882=1
+       hash:DDBF0991=1
+       ... (+15 more)
+
+=== chaos_inhibit_base_glow.troybin (266 bytes) ===
+  Version=0x02  Entries=22  Particles=2
+  All entry hashes + resolved names:
+    0x80F9E757  [?] ? = -1
+    0x74E2150C  [?] ? = 2
+    0x9440533B  [?] ? = 2
+    0xF103958A  [?] ? = 3
+    0x016802E0  [?] ? = 0 1 0
+    0x31C85BD6  [?] ? = 0 1 0
+    0x8DFE8163  [?] ? = 0 10 0
+    0x9A8D971A  [?] ? = 3 3 3
+    0xDD574822  [?] ? = 1 1 1
+    0xB123D465  [?] ? = 1 10
+    0x8C3594DB  [?] ? = 1 360
+    0x9722ABCF  [?] ? = 138 0 189 50
+    0x0616933A  [System] GroupPart1 = crown
+    0x1BE1EF55  [?] ? = 0.0 1 1 1 0
+    0x1BE1EF56  [?] ? = 0.3 1 1 1 1
+    0x1BE1EF57  [?] ? = 1.0 1 1 1 0
+    0x8C3594DA  [?] ? = 0.0 0
+    0xA17DAAFD  [?] ? = Saucer6.scb
+    0xB123D464  [?] ? = 0.0 -10
+    0xC7A2428A  [?] ? = cylinder06.dds
+    0xE3397EB5  [System] GroupPart2Type = Complex
+    0xF0A57DCC  [?] ? = 0
+
+  Particles:
+  -> [System]  Tex=ÔÇö  Mesh=ÔÇö  Blend=ÔÇö  (2 fields)
+       GroupPart1=crown
+       GroupPart2Type=Complex
+  -> [Unknown]  Tex=ÔÇö  Mesh=ÔÇö  Blend=ÔÇö  (20 fields)
+       hash:80F9E757=-1
+       hash:74E2150C=2
+       hash:9440533B=2
+       hash:F103958A=3
+       hash:016802E0=0 1 0
+       ... (+15 more)
+
+--- Done ---

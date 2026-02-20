@@ -1,0 +1,22 @@
+﻿Trying 7 sections x 7715 fields...
+Found 17/20:
+  0x80F9E757  [crown] e-life
+  0x74E2150C  [crown] p-life
+  0x9440533B  [crown] e-rate
+  0xF103958A  [crown] p-type
+  0x016802E0  UNKNOWN
+  0x31C85BD6  [crown] p-rotvel
+  0x8DFE8163  [crown] p-postoffset
+  0x9A8D971A  [crown] p-scale
+  0xDD574822  [crown] e-rgba1
+  0xB123D465  [crown] p-rotvelYP2
+  0x8C3594DB  UNKNOWN
+  0x9722ABCF  [crown] e-rgba
+  0x1BE1EF55  [crown] p-xrgba1
+  0x1BE1EF56  [crown] p-xrgba2
+  0x1BE1EF57  [crown] p-xrgba3
+  0x8C3594DA  UNKNOWN
+  0xA17DAAFD  [crown] p-mesh
+  0xB123D464  [crown] p-rotvelYP1
+  0xC7A2428A  [crown] p-meshtex
+  0xF0A57DCC  [crown] rendermode

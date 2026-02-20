@@ -1,0 +1,13 @@
+﻿C:\Users\theki\RiderProjects\TroybinEditor\TestParser\TestParser.cs(80,5): error CS0128: Eine lokale Variable oder Funktion mit dem Namen "targets" ist bereits in diesem Bereich definiert. [C:\Users\theki\RiderProjects\TroybinEditor\TestParser\TestParser.csproj]
+C:\Users\theki\RiderProjects\TroybinEditor\TestParser\TestParser.cs(88,5): error CS0128: Eine lokale Variable oder Funktion mit dem Namen "tset" ist bereits in diesem Bereich definiert. [C:\Users\theki\RiderProjects\TroybinEditor\TestParser\TestParser.csproj]
+C:\Users\theki\RiderProjects\TroybinEditor\TestParser\TestParser.cs(92,5): error CS0128: Eine lokale Variable oder Funktion mit dem Namen "fields" ist bereits in diesem Bereich definiert. [C:\Users\theki\RiderProjects\TroybinEditor\TestParser\TestParser.csproj]
+C:\Users\theki\RiderProjects\TroybinEditor\TestParser\TestParser.cs(116,5): error CS0128: Eine lokale Variable oder Funktion mit dem Namen "baseFields" ist bereits in diesem Bereich definiert. [C:\Users\theki\RiderProjects\TroybinEditor\TestParser\TestParser.csproj]
+C:\Users\theki\RiderProjects\TroybinEditor\TestParser\TestParser.cs(132,5): error CS0128: Eine lokale Variable oder Funktion mit dem Namen "sections" ist bereits in diesem Bereich definiert. [C:\Users\theki\RiderProjects\TroybinEditor\TestParser\TestParser.csproj]
+dotnet : 
+In Zeile:1 Zeichen:1
++ dotnet run --project "C:\Users\theki\RiderProjects\TroybinEditor\Test ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+Fehler beim Buildvorgang. Beheben Sie die Buildfehler, und versuchen Sie es anschlie├ƒend noch mal.
