@@ -24,8 +24,8 @@ A modern, polished editor for League of Legends Troybin particle files (`.troybi
 
 * Clear particle list on the left
 * Quick preview of particle properties
-* Create new particles
 * Delete particles
+* Edit particles
 
 ⚙️ **Properties editor**
 
@@ -88,8 +88,7 @@ dotnet run
 1. **Open file**: `File > Open` or the “📁 Open” button
 2. **Select particle**: click a particle in the left list
 3. **Edit properties**: change values in the property fields on the right
-4. **Create new particle**: “➕ New Particle” button or `Edit > New Particle`
-5. **Save changes**: Ctrl+S or `File > Save`
+4. **Save changes**: Ctrl+S or `File > Save`
 
 ## Tech Stack
 
@@ -103,10 +102,7 @@ dotnet run
 
 * 🔄 Undo/Redo functionality
 * 👁️ 3D particle preview
-* 📊 Property data type validation
-* 🎞️ Animation preview
 * 📋 Batch operations
-* 🌍 Multi-language UI
 
 ## Styling & Customization
 
