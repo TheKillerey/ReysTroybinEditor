@@ -1,5 +1,8 @@
 # Troybin Editor – League of Legends Particle File Editor
 
+<img width="1915" height="1153" alt="image" src="https://github.com/user-attachments/assets/c49ac844-ac9c-4dda-b835-dad93feb33bf" />
+
+
 A modern, polished editor for League of Legends Troybin particle files (`.troybin`). The editor provides an intuitive interface with real-time editing of particle properties.
 
 ## Features
