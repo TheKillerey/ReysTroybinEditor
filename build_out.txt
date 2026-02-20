@@ -1,9 +1,0 @@
-  Wiederherzustellende Projekte werden ermittelt...
-  Alle Projekte sind für die Wiederherstellung auf dem neuesten Stand.
-  TroybinEditor -> C:\Users\theki\RiderProjects\TroybinEditor\TroybinEditor\bin\Debug\net10.0-windows\TroybinEditor.dll
-
-Der Buildvorgang wurde erfolgreich ausgeführt.
-    0 Warnung(en)
-    0 Fehler
-
-Verstrichene Zeit 00:00:00.74
