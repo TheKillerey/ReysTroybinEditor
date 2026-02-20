@@ -1,125 +1,129 @@
-# Troybin Editor - League of Legends Particle File Editor
+# Troybin Editor – League of Legends Particle File Editor
 
-Ein moderner, schöner Editor für League of Legends Troybin Partikeldateien (`.troybin`). Der Editor bietet eine intuitive Oberfläche mit Echtzeit-Bearbeitung von Partikel-Eigenschaften.
+A modern, polished editor for League of Legends Troybin particle files (`.troybin`). The editor provides an intuitive interface with real-time editing of particle properties.
 
 ## Features
 
-✨ **Moderne, dunkle Benutzeroberfläche**
-- Sleek Dark Theme mit Blau-Akzenten
-- Responsive 3-spalten Layout
-- Modern WPF mit MVVM-Architektur
+✨ **Modern, dark user interface**
 
-📂 **Dateioperationen**
-- Öffnen von `.troybin` Dateien
-- Speichern von Änderungen
-- "Speichern unter" Funktionalität
-- Automatische Backup-Erstellung beim Speichern
+* Sleek dark theme with blue accents
+* Responsive 3-column layout
+* Modern WPF with MVVM architecture
 
-🎨 **Partikel-Management**
-- Übersichtliche Partikelliste im linken Bereich
-- Schnelle Vorschau der Partikel-Eigenschaften
-- Erstellen neuer Partikel
-- Löschen von Partikeln
+📂 **File operations**
 
-⚙️ **Eigenschaften-Editor**
-- **Allgemein**: Aktivierter Status, Dauer
-- **Position**: X, Y, Z Koordinaten
-- **Skalierung**: X, Y, Z Skalen-Werte
-- **Farbe**: RGBA-Kanäle mit visueller Vorschau
-- Echtzeit-Updates während der Bearbeitung
+* Open `.troybin` files
+* Save changes
+* “Save As” functionality
+* Automatic backup creation when saving
 
-## Architektur
+🎨 **Particle management**
+
+* Clear particle list on the left
+* Quick preview of particle properties
+* Create new particles
+* Delete particles
+
+⚙️ **Properties editor**
+
+* **General**: enabled state, duration
+* **Position**: X, Y, Z coordinates
+* **Scale**: X, Y, Z scale values
+* **Color**: RGBA channels with visual preview
+* Real-time updates while editing
+
+## Architecture
 
 ```
 TroybinEditor/
-├── Models/                 # Datenmodelle
-│   ├── ParticleData.cs    # Partikel-Struktur
-│   └── TroybinDocument.cs # Dokument-Container
+├── Models/                 # Data models
+│   ├── ParticleData.cs    # Particle structure
+│   └── TroybinDocument.cs # Document container
 ├── ViewModels/            # MVVM ViewModels
 │   ├── MainWindowViewModel.cs
 │   └── ParticleViewModel.cs
-├── Services/              # Business Logic
+├── Services/              # Business logic
 │   ├── ITroybinFileService.cs
 │   ├── TroybinFileService.cs
 │   ├── IFileDialogService.cs
 │   └── FileDialogService.cs
-├── Views/                 # UI Components
+├── Views/                 # UI components
 │   ├── MainWindow.xaml
 │   └── MainWindow.xaml.cs
-├── Themes/               # UI Styling
-│   ├── Colors.xaml       # Farb-Palette
-│   └── Styles.xaml       # Control Styles
-└── Converters/           # Value Converters
+├── Themes/               # UI styling
+│   ├── Colors.xaml       # Color palette
+│   └── Styles.xaml       # Control styles
+└── Converters/           # Value converters
     ├── NullToVisibilityConverter.cs
     └── RgbToColorConverter.cs
 ```
 
-## Installation & Nutzung
+## Installation & Usage
 
-### Voraussetzungen
-- .NET 10 oder höher
-- Windows 7 oder später
+### Requirements
 
-### Ausführen
+* .NET 10 or newer
+* Windows 7 or later
+
+### Running
 
 ```bash
-# Repository klonen
+# Clone the repository
 git clone https://github.com/yourusername/TroybinEditor.git
 cd TroybinEditor
 
-# Mit dotnet ausführen
+# Run with dotnet
 dotnet run
 
-# Oder bauen und ausführen
+# Or build and run
 dotnet build
 dotnet run
 ```
 
-### Bedienung
+### How to use
 
-1. **Datei öffnen**: `Datei > Öffnen` oder Button "📁 Open"
-2. **Partikel wählen**: Klick auf einen Partikel in der linken Liste
-3. **Eigenschaften bearbeiten**: Werte in den rechten Property-Feldern ändern
-4. **Neuen Partikel erstellen**: Button "➕ New Particle" oder `Bearbeiten > Neuer Partikel`
-5. **Änderungen speichern**: Ctrl+S oder `Datei > Speichern`
+1. **Open file**: `File > Open` or the “📁 Open” button
+2. **Select particle**: click a particle in the left list
+3. **Edit properties**: change values in the property fields on the right
+4. **Create new particle**: “➕ New Particle” button or `Edit > New Particle`
+5. **Save changes**: Ctrl+S or `File > Save`
 
-## Technologie-Stack
+## Tech Stack
 
-- **Framework**: WPF (Windows Presentation Foundation)
-- **Language**: C# (.NET 10)
-- **MVVM Toolkit**: CommunityToolkit.Mvvm 8.2.2
-- **Pattern**: MVVM (Model-View-ViewModel)
-- **UI Theme**: Modern Dark Mode mit Custom Styles
+* **Framework**: WPF (Windows Presentation Foundation)
+* **Language**: C# (.NET 10)
+* **MVVM Toolkit**: CommunityToolkit.Mvvm 8.2.2
+* **Pattern**: MVVM (Model–View–ViewModel)
+* **UI Theme**: Modern dark mode with custom styles
 
-## Geplante Features
+## Planned Features
 
-- 🔄 Undo/Redo Funktionalität
-- 👁️ 3D-Vorschau der Partikel
-- 📊 Eigenschafts-Datentyp-Validierung
-- 🎞️ Animation Preview
-- 📋 Batch-Operationen
-- 🌍 Mehrsprachige UI
+* 🔄 Undo/Redo functionality
+* 👁️ 3D particle preview
+* 📊 Property data type validation
+* 🎞️ Animation preview
+* 📋 Batch operations
+* 🌍 Multi-language UI
 
 ## Styling & Customization
 
-Das Styling basiert auf modernem Design mit einem dunkelen Theme:
+The styling is based on a modern design with a dark theme:
 
-- **Primärfarbe**: Blau (#3B82F6)
-- **Hintergrund**: Sehr dunkles Blau (#0F172A)
-- **Oberflächen**: Dunkles Schieferblau (#1E293B)
-- **Text**: Helles Blau-Weiß (#F1F5F9)
+* **Primary color**: Blue (#3B82F6)
+* **Background**: Very dark blue (#0F172A)
+* **Surfaces**: Dark slate blue (#1E293B)
+* **Text**: Light blue-white (#F1F5F9)
 
-Um das Theme zu ändern, bearbeite `Themes/Colors.xaml`.
+To change the theme, edit `Themes/Colors.xaml`.
 
-## Lizenz
+## License
 
-MIT License - Frei nutzbar für eigene Projekte
+MIT License – free to use for your own projects.
 
-## Kontakt & Support
+## Contact & Support
 
-Bei Fragen oder Problemen, bitte ein Issue erstellen.
+If you have questions or issues, please open an issue.
 
 ---
 
-**Hinweis**: Dieses Projekt ist ein Community-Editor und ist nicht offiziell mit Riot Games oder League of Legends verbunden.
-
+**Note**: This project is a community editor and is not officially affiliated with Riot Games or League of Legends.
