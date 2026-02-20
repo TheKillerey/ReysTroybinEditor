@@ -15,9 +15,10 @@ public partial class MainWindowViewModel : ObservableObject
 
     [ObservableProperty] private TroybinDocument? currentDocument;
     [ObservableProperty] private ParticleViewModel? selectedParticle;
+    [ObservableProperty] private StringEntry?       selectedEntry;
     [ObservableProperty] private string statusMessage = "Ready – open a .troybin file to begin";
     [ObservableProperty] private bool isLoading;
-    [ObservableProperty] private string windowTitle = "Troybin Editor";
+    [ObservableProperty] private string windowTitle = "Rey's Troybin Editor";
 
     public ObservableCollection<ParticleViewModel> Particles { get; } = new();
 
@@ -37,8 +38,8 @@ public partial class MainWindowViewModel : ObservableObject
 
     public MainWindowViewModel()
     {
-        _fileService   = new TroybinFileService();
-        _dialogService = new FileDialogService();
+        _fileService    = new TroybinFileService();
+        _dialogService  = new FileDialogService();
         _messageService = new MessageService();
     }
 
@@ -58,7 +59,7 @@ public partial class MainWindowViewModel : ObservableObject
             CurrentDocument = await _fileService.LoadFileAsync(filePath);
             RefreshParticles();
 
-            WindowTitle   = $"Troybin Editor – {CurrentDocument.FileName}";
+            WindowTitle   = $"Rey's Troybin Editor – {CurrentDocument.FileName}";
             StatusMessage = $"Loaded: {CurrentDocument.FileName}  ({CurrentDocument.Particles.Count} particles, {CurrentDocument.AllStrings.Count} strings)";
             OnPropertyChanged(nameof(FileInfoText));
         }
@@ -79,6 +80,7 @@ public partial class MainWindowViewModel : ObservableObject
         {
             IsLoading     = true;
             StatusMessage = "Saving…";
+            SyncDocumentFromViewModels();
             await _fileService.SaveFileAsync(CurrentDocument, CurrentDocument.FilePath);
             StatusMessage = $"Saved: {CurrentDocument.FileName}";
         }
@@ -102,11 +104,13 @@ public partial class MainWindowViewModel : ObservableObject
 
             IsLoading     = true;
             StatusMessage = "Saving…";
+            SyncDocumentFromViewModels();
             CurrentDocument.FilePath = path;
             CurrentDocument.FileName = Path.GetFileName(path);
             await _fileService.SaveFileAsync(CurrentDocument, path);
-            WindowTitle   = $"Troybin Editor – {CurrentDocument.FileName}";
+            WindowTitle   = $"Rey's Troybin Editor – {CurrentDocument.FileName}";
             StatusMessage = $"Saved as: {CurrentDocument.FileName}";
+            OnPropertyChanged(nameof(FileInfoText));
         }
         catch (Exception ex)
         {
@@ -120,21 +124,138 @@ public partial class MainWindowViewModel : ObservableObject
     public void DeleteSelectedParticle()
     {
         if (SelectedParticle == null || CurrentDocument == null) return;
-        var vm = SelectedParticle;
+        var vm   = SelectedParticle;
         var model = CurrentDocument.Particles.FirstOrDefault(p => p.Name == vm.Name);
         if (model == null) return;
 
         CurrentDocument.Particles.Remove(model);
-        // rebuild allStrings list too
         CurrentDocument.AllStrings = CurrentDocument.Particles.SelectMany(p => p.Strings).ToList();
         CurrentDocument.IsModified = true;
         RefreshParticles();
         SelectedParticle = null;
-        StatusMessage = $"Deleted particle '{vm.Name}'";
+        StatusMessage    = $"Deleted emitter '{vm.Name}'";
         OnPropertyChanged(nameof(FileInfoText));
     }
 
+    /// <summary>Reset selected particle's values back to what was loaded from disk.</summary>
+    [RelayCommand]
+    public void ResetSelectedParticle()
+    {
+        if (SelectedParticle == null) return;
+        SelectedParticle.ResetToOriginal();
+        // Also refresh the document's AllStrings
+        if (CurrentDocument != null)
+            CurrentDocument.AllStrings = CurrentDocument.Particles.SelectMany(p => p.Strings).ToList();
+        StatusMessage = $"Reset '{SelectedParticle.Name}' to original values";
+    }
+
+    /// <summary>Delete the selected string entry from the selected particle.</summary>
+    [RelayCommand]
+    public void DeleteSelectedEntry()
+    {
+        if (SelectedParticle == null || SelectedEntry == null) return;
+        var entry = SelectedEntry;
+        SelectedEntry = null;
+        SelectedParticle.DeleteEntry(entry);
+        if (CurrentDocument != null)
+            CurrentDocument.IsModified = true;
+        StatusMessage = $"Deleted entry '{entry.Key}'";
+        OnPropertyChanged(nameof(FileInfoText));
+    }
+
+    /// <summary>Opens the Add Entry dialog for the selected particle.</summary>
+    [RelayCommand]
+    public void AddEntry()
+    {
+        if (SelectedParticle == null) return;
+        var dlg = new Views.AddEntryDialog { Owner = GetMainWindow() };
+        if (dlg.ShowDialog() != true) return;
+
+        SelectedParticle.AddEntry(dlg.EntryKey, dlg.EntryValue);
+        if (CurrentDocument != null)
+            CurrentDocument.IsModified = true;
+        StatusMessage = $"Added entry '{dlg.EntryKey}' to '{SelectedParticle.Name}'";
+    }
+
+    /// <summary>Opens the Add Emitter dialog to create a new emitter in the document.</summary>
+    [RelayCommand]
+    public void AddEmitter()
+    {
+        if (CurrentDocument == null)
+        { _messageService.ShowWarning("No file", "Open a file first."); return; }
+
+        var dlg = new Views.AddEmitterDialog { Owner = GetMainWindow() };
+        if (dlg.ShowDialog() != true) return;
+
+        var newParticle = new ParticleData { Name = dlg.EmitterName };
+        CurrentDocument.Particles.Add(newParticle);
+        CurrentDocument.IsModified = true;
+        RefreshParticles();
+        SelectedParticle = Particles.LastOrDefault();
+        StatusMessage    = $"Added emitter '{dlg.EmitterName}'";
+        OnPropertyChanged(nameof(FileInfoText));
+    }
+
+    /// <summary>Export the current document to a human-readable .txt file.</summary>
+    [RelayCommand]
+    public async Task ExportToText()
+    {
+        if (CurrentDocument == null)
+        { _messageService.ShowWarning("No file", "Open a file first."); return; }
+        try
+        {
+            var path = _dialogService.SaveFileDialog("Text files (*.txt)|*.txt", ".txt");
+            if (string.IsNullOrEmpty(path)) return;
+
+            SyncDocumentFromViewModels();
+            await TroybinTextConverter.ExportToFileAsync(CurrentDocument, path);
+            StatusMessage = $"Exported to: {Path.GetFileName(path)}";
+        }
+        catch (Exception ex)
+        {
+            _messageService.ShowError("Export Error", ex.Message);
+        }
+    }
+
+    /// <summary>Import from a previously exported text file and update the document.</summary>
+    [RelayCommand]
+    public async Task ImportFromText()
+    {
+        if (CurrentDocument == null)
+        { _messageService.ShowWarning("No file", "Open a file first."); return; }
+        try
+        {
+            var path = _dialogService.OpenFileDialog("Text files (*.txt)|*.txt");
+            if (string.IsNullOrEmpty(path)) return;
+
+            IsLoading     = true;
+            StatusMessage = "Importing…";
+
+            var updated     = await TroybinTextConverter.ImportFromFileAsync(path, CurrentDocument);
+            CurrentDocument = updated;
+            RefreshParticles();
+            StatusMessage   = $"Imported from: {Path.GetFileName(path)}";
+            OnPropertyChanged(nameof(FileInfoText));
+        }
+        catch (Exception ex)
+        {
+            _messageService.ShowError("Import Error", ex.Message);
+        }
+        finally { IsLoading = false; }
+    }
+
     // ── Internal helpers ─────────────────────────────────────────────────
+
+    /// <summary>
+    /// Ensures the document's Particles list reflects all ViewModel edits before saving.
+    /// The ParticleViewModel already writes back to the model on each change,
+    /// but this is a safety flush.
+    /// </summary>
+    private void SyncDocumentFromViewModels()
+    {
+        if (CurrentDocument == null) return;
+        CurrentDocument.AllStrings = CurrentDocument.Particles.SelectMany(p => p.Strings).ToList();
+    }
 
     private void RefreshParticles()
     {
@@ -145,8 +266,13 @@ public partial class MainWindowViewModel : ObservableObject
         if (Particles.Count > 0) SelectedParticle = Particles[0];
     }
 
+    private System.Windows.Window? GetMainWindow()
+        => System.Windows.Application.Current.MainWindow;
+
     partial void OnSelectedParticleChanged(ParticleViewModel? value)
     {
+        SelectedEntry = null;
         OnPropertyChanged(nameof(SelectedParticle));
     }
 }
+

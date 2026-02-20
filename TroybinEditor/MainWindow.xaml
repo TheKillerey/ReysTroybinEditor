@@ -112,14 +112,48 @@
 
                 <!-- Quick buttons -->
                 <StackPanel DockPanel.Dock="Left" Orientation="Horizontal" Margin="12,0,0,0">
+                    <!-- File -->
                     <Button Content="📂  Open"    Command="{Binding OpenFileCommand}"
-                            Style="{StaticResource ModernButtonStyle}" Padding="12,6" Margin="0,0,6,0"/>
+                            Style="{StaticResource ModernButtonStyle}" Padding="12,6" Margin="0,0,4,0"/>
                     <Button Content="💾  Save"    Command="{Binding SaveFileCommand}"
-                            Style="{StaticResource ModernButtonStyle}" Padding="12,6" Margin="0,0,6,0"/>
+                            Style="{StaticResource ModernButtonStyle}" Padding="12,6" Margin="0,0,4,0"/>
                     <Button Content="Save As…"   Command="{Binding SaveAsCommand}"
-                            Style="{StaticResource ModernButtonStyle}" Padding="12,6" Margin="0,0,6,0"/>
-                    <Button Content="🗑  Delete"  Command="{Binding DeleteSelectedParticleCommand}"
-                            Style="{StaticResource DangerButtonStyle}" Padding="12,6"/>
+                            Style="{StaticResource ModernButtonStyle}" Padding="12,6" Margin="0,0,12,0"/>
+
+                    <!-- Emitter actions -->
+                    <Rectangle Width="1" Fill="{StaticResource SurfaceLightBrush}" Margin="0,4,12,4"/>
+                    <Button Content="➕ Emitter"  Command="{Binding AddEmitterCommand}"
+                            Style="{StaticResource ModernButtonStyle}"
+                            Background="{StaticResource AccentBrush}" Padding="12,6" Margin="0,0,4,0"
+                            ToolTip="Add a new emitter to this file"/>
+                    <Button Content="🗑 Emitter"  Command="{Binding DeleteSelectedParticleCommand}"
+                            Style="{StaticResource DangerButtonStyle}" Padding="12,6" Margin="0,0,12,0"
+                            ToolTip="Delete the selected emitter"/>
+
+                    <!-- Entry actions -->
+                    <Rectangle Width="1" Fill="{StaticResource SurfaceLightBrush}" Margin="0,4,12,4"/>
+                    <Button Content="➕ Entry"    Command="{Binding AddEntryCommand}"
+                            Style="{StaticResource ModernButtonStyle}"
+                            Background="{StaticResource AccentBrush}" Padding="12,6" Margin="0,0,4,0"
+                            ToolTip="Add a key=value entry to the selected emitter"/>
+                    <Button Content="🗑 Entry"    Command="{Binding DeleteSelectedEntryCommand}"
+                            Style="{StaticResource DangerButtonStyle}" Padding="12,6" Margin="0,0,4,0"
+                            ToolTip="Delete the selected entry"/>
+                    <Button Content="↩ Reset"    Command="{Binding ResetSelectedParticleCommand}"
+                            Style="{StaticResource ModernButtonStyle}"
+                            Background="{StaticResource SurfaceLightBrush}" Padding="12,6" Margin="0,0,12,0"
+                            ToolTip="Reset selected emitter to original (loaded) values (Ctrl+Z)"/>
+
+                    <!-- Convert -->
+                    <Rectangle Width="1" Fill="{StaticResource SurfaceLightBrush}" Margin="0,4,12,4"/>
+                    <Button Content="📤 Export Text" Command="{Binding ExportToTextCommand}"
+                            Style="{StaticResource ModernButtonStyle}"
+                            Background="{StaticResource SurfaceLightBrush}" Padding="12,6" Margin="0,0,4,0"
+                            ToolTip="Export all emitters to a readable .txt file"/>
+                    <Button Content="📥 Import Text" Command="{Binding ImportFromTextCommand}"
+                            Style="{StaticResource ModernButtonStyle}"
+                            Background="{StaticResource SurfaceLightBrush}" Padding="12,6"
+                            ToolTip="Import emitters back from a .txt file"/>
                 </StackPanel>
 
                 <!-- Loading indicator -->
@@ -242,6 +276,7 @@
 
                     <DataGrid DockPanel.Dock="Top"
                               ItemsSource="{Binding SelectedParticle.Entries}"
+                              SelectedItem="{Binding SelectedEntry}"
                               Visibility="{Binding SelectedParticle, Converter={StaticResource NotNullToVisConverter}}">
                         <DataGrid.Columns>
 

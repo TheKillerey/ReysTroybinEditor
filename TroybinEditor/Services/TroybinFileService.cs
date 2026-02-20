@@ -327,7 +327,12 @@ public class TroybinFileService : ITroybinFileService
             int o = dataStart + offsets[i];
             var sb = new StringBuilder();
             while (o < b.Length && b[o] != 0) sb.Append((char)b[o++]);
-            result.Add(new IniEntry { Hash = keys[i], Value = sb.ToString() });
+            result.Add(new IniEntry
+            {
+                Hash                 = keys[i],
+                Value                = sb.ToString(),
+                OriginalStringOffset = offsets[i]   // store offset for patching
+            });
         }
         pos += stringsLength;
         return result;
@@ -406,8 +411,27 @@ public class TroybinFileService : ITroybinFileService
 
     private static byte[] PatchV2Strings(TroybinDocument doc)
     {
-        var b   = (byte[])doc.OriginalBytes.Clone();
-        int pos = 1;
+        // ── Step 1: Sync AllEntries string values from the current ParticleData ──
+        // Build a lookup: hash → new string value from the edited particles
+        var updatedStrings = new Dictionary<uint, string>();
+        foreach (var entry in doc.AllEntries.Where(e => e.Value is string && e.ResolvedName != null))
+        {
+            // Find the matching value in the edited particles
+            string? newVal = FindUpdatedValue(doc, entry);
+            if (newVal != null)
+                updatedStrings[entry.Hash] = newVal;
+        }
+
+        // Apply updated values back into AllEntries
+        foreach (var entry in doc.AllEntries.Where(e => e.Value is string))
+        {
+            if (updatedStrings.TryGetValue(entry.Hash, out var updated))
+                entry.Value = updated;
+        }
+
+        // ── Step 2: Check if any string changed length ─────────────────────────
+        var b    = (byte[])doc.OriginalBytes.Clone();
+        int pos  = 1;
         ushort stringsLength = ReadU16(b, ref pos);
         ushort flags         = ReadU16(b, ref pos);
         if (flags == 0) flags = ReadU16(b, ref pos);
@@ -423,34 +447,114 @@ public class TroybinFileService : ITroybinFileService
             else          SkipNumbers(b, ref scanPos, bit);
         }
 
-        // Now at the string block
-        ushort num = ReadU16(b, ref scanPos);
-        // skip hashes
-        scanPos += num * 4;
-        // skip offsets
-        scanPos += num * 2;
+        // Now at the string block header
+        int strBlockStart = scanPos;
+        ushort num        = ReadU16(b, ref scanPos);
+        uint[] hashes     = new uint[num];
+        for (int i = 0; i < num; i++) hashes[i] = ReadU32(b, ref scanPos);
+        ushort[] offsets  = new ushort[num];
+        for (int i = 0; i < num; i++) offsets[i] = ReadU16(b, ref scanPos);
+        int dataStart     = scanPos;
 
-        int dataStart = scanPos;
-
-        // Build a map: old string offset → new string (from AllEntries)
-        // For entries that were modified, write new value if same length
-        foreach (var entry in doc.AllEntries.Where(e => e.Value is string))
+        // Read all current string values from original bytes
+        var currentStrings = new string[num];
+        for (int i = 0; i < num; i++)
         {
-            if (entry.OriginalStringOffset < 0) continue;
-            int o = dataStart + entry.OriginalStringOffset;
-            var newVal = entry.Value as string ?? "";
-            var oldVal = ReadNullTerminated(b, o);
-            if (newVal == oldVal) continue;
-            if (newVal.Length == oldVal.Length)
-            {
-                // Same length: patch in place
-                var encoded = Encoding.ASCII.GetBytes(newVal);
-                encoded.CopyTo(b, o);
-            }
-            // Different length: skip (would need full rebuild)
+            int o = dataStart + offsets[i];
+            var sb = new StringBuilder();
+            while (o < b.Length && b[o] != 0) sb.Append((char)b[o++]);
+            currentStrings[i] = sb.ToString();
         }
 
-        return b;
+        // Resolve new values for each slot
+        var newStrings = new string[num];
+        for (int i = 0; i < num; i++)
+        {
+            var entry = doc.AllEntries.FirstOrDefault(e => e.Hash == hashes[i] && e.Value is string);
+            newStrings[i] = entry?.Value as string ?? currentStrings[i];
+        }
+
+        // Check if any length differs
+        bool needsRebuild = false;
+        for (int i = 0; i < num; i++)
+            if (Encoding.ASCII.GetByteCount(newStrings[i]) != Encoding.ASCII.GetByteCount(currentStrings[i]))
+            { needsRebuild = true; break; }
+
+        if (!needsRebuild)
+        {
+            // ── In-place patch (same-length strings) ──
+            for (int i = 0; i < num; i++)
+            {
+                if (newStrings[i] == currentStrings[i]) continue;
+                int o = dataStart + offsets[i];
+                var encoded = Encoding.ASCII.GetBytes(newStrings[i]);
+                encoded.CopyTo(b, o);
+            }
+            return b;
+        }
+
+        // ── Full string-pool rebuild ───────────────────────────────────────────
+        // Build new string data pool
+        var newOffsets  = new ushort[num];
+        var poolBuilder = new List<byte>();
+        for (int i = 0; i < num; i++)
+        {
+            newOffsets[i] = (ushort)poolBuilder.Count;
+            poolBuilder.AddRange(Encoding.ASCII.GetBytes(newStrings[i]));
+            poolBuilder.Add(0); // null terminator
+        }
+        byte[] newPool = poolBuilder.ToArray();
+        ushort newStrLen = (ushort)newPool.Length;
+
+        // Build the new string block bytes
+        var blockBytes = new List<byte>();
+        blockBytes.AddRange(BitConverter.GetBytes(num));                         // count (u16)
+        foreach (var h in hashes)  blockBytes.AddRange(BitConverter.GetBytes(h));   // hashes
+        foreach (var o in newOffsets) blockBytes.AddRange(BitConverter.GetBytes(o)); // offsets
+        blockBytes.AddRange(newPool);                                             // string data
+
+        int oldBlockSize = 2 + num * 4 + num * 2 + stringsLength; // header + hashes + offsets + data
+        int newBlockSize = blockBytes.Count;
+
+        // Rebuild entire file buffer with the replaced block
+        var result = new List<byte>();
+        // Bytes before string block
+        result.AddRange(b.Take(strBlockStart));
+        // New string block
+        result.AddRange(blockBytes);
+        // Bytes after old string block
+        result.AddRange(b.Skip(strBlockStart + oldBlockSize));
+
+        // Patch stringsLength at offset 1 (u16)
+        var resultArr = result.ToArray();
+        var newStrLenBytes = BitConverter.GetBytes(newStrLen);
+        resultArr[1] = newStrLenBytes[0];
+        resultArr[2] = newStrLenBytes[1];
+
+        return resultArr;
+    }
+
+    /// <summary>
+    /// Looks up the current (edited) value for an AllEntries string entry
+    /// by matching section+field against the current particle strings.
+    /// </summary>
+    private static string? FindUpdatedValue(TroybinDocument doc, IniEntry entry)
+    {
+        if (entry.ResolvedSection == null || entry.ResolvedName == null) return null;
+
+        var particle = doc.Particles.FirstOrDefault(p =>
+            string.Equals(p.Name, entry.ResolvedSection, StringComparison.OrdinalIgnoreCase));
+        if (particle == null) return null;
+
+        foreach (var s in particle.Strings)
+        {
+            int eq = s.IndexOf('=');
+            if (eq <= 0) continue;
+            var key = s.Substring(0, eq).Trim();
+            if (string.Equals(key, entry.ResolvedName, StringComparison.OrdinalIgnoreCase))
+                return s.Substring(eq + 1);
+        }
+        return null;
     }
 
     // ── Low-level read helpers ────────────────────────────────────────────────

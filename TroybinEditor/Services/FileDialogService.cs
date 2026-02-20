@@ -14,9 +14,9 @@ public class FileDialogService : IFileDialogService
         return dialog.ShowDialog() == true ? dialog.FileName : null;
     }
     
-    public string? SaveFileDialog(string filter = "Troybin Files (*.troybin)|*.troybin|All Files (*.*)|*.*")
+    public string? SaveFileDialog(string filter = "Troybin Files (*.troybin)|*.troybin|All Files (*.*)|*.*", string defaultExt = ".troybin")
     {
-        var dialog = new SaveFileDialog { Filter = filter };
+        var dialog = new SaveFileDialog { Filter = filter, DefaultExt = defaultExt };
         return dialog.ShowDialog() == true ? dialog.FileName : null;
     }
 }
